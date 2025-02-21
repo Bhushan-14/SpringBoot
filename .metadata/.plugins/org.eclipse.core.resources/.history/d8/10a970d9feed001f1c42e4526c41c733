@@ -1,0 +1,13 @@
+package com.example.AddressJoin.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+import java.util.List;
+
+@Getter
+@Setter
+public class CountryMasterDTO {
+    private Long id;
+    private String name;
+    private List<StateMasterDTO> states;  // List of states in the country
+}

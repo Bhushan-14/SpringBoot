@@ -1,0 +1,21 @@
+package com.example.demo.mapper;
+
+import com.example.demo.dao.entities.Department;
+import com.example.demo.dao.entities.Employee;
+import com.example.demo.dto.EmployeeDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    @Mapping(target = "departmentIds", expression = "java(employee.getDepartments().stream().map(d -> d.getId()).collect(Collectors.toSet()))")
+    EmployeeDTO mapEntityToDto(Employee employee);  
+
+    @Mapping(target = "departments", ignore = true)
+    Employee mapDtoToEntity(EmployeeDTO employeeDTO);
+
+    List<EmployeeDTO> mapEntityListToDtoList(List<Employee> employeeList);  
+}

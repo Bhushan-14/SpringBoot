@@ -1,0 +1,65 @@
+package com.example.AddressJoin.dao.repositories;
+
+import com.example.AddressJoin.dao.entities.CountryMaster;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class AddressQueryBuilderRepositoryImpl implements AddressQueryBuilderRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<CountryMaster> findDynamicAddresses(List<Long> countryIds, List<Long> stateIds, List<Long> districtIds, List<Long> subDistrictIds) {
+        StringBuilder queryBuilder = new StringBuilder();
+
+        queryBuilder.append("SELECT c FROM CountryMaster c ");
+        queryBuilder.append("JOIN c.states s ");
+        queryBuilder.append("JOIN s.districts d ");
+        queryBuilder.append("JOIN d.subDistricts sd ");
+        queryBuilder.append("WHERE c.isActive = true ");
+
+        if (countryIds != null && !countryIds.isEmpty()) {
+            queryBuilder.append("AND c.id IN :countryIds ");
+        }
+
+        if (stateIds != null && !stateIds.isEmpty()) {
+            queryBuilder.append("AND s.id IN :stateIds ");
+        }
+
+        if (districtIds != null && !districtIds.isEmpty()) {
+            queryBuilder.append("AND d.id IN :districtIds ");
+        }
+
+        if (subDistrictIds != null && !subDistrictIds.isEmpty()) {
+            queryBuilder.append("AND sd.id IN :subDistrictIds ");
+        }
+
+        queryBuilder.append("ORDER BY c.id DESC");
+
+        TypedQuery<CountryMaster> query = entityManager.createQuery(queryBuilder.toString(), CountryMaster.class);
+
+        if (countryIds != null && !countryIds.isEmpty()) {
+            query.setParameter("countryIds", countryIds);
+        }
+
+        if (stateIds != null && !stateIds.isEmpty()) {
+            query.setParameter("stateIds", stateIds);
+        }
+
+        if (districtIds != null && !districtIds.isEmpty()) {
+            query.setParameter("districtIds", districtIds);
+        }
+
+        if (subDistrictIds != null && !subDistrictIds.isEmpty()) {
+            query.setParameter("subDistrictIds", subDistrictIds);
+        }
+
+        return query.getResultList();
+    }
+}

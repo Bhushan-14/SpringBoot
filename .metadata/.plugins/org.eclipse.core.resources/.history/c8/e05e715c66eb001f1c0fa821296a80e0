@@ -1,0 +1,8 @@
+@AllArgsConstructor
+public class EmployeeApiResponse {
+    private EmployeeDTO employee;
+    private List<EmployeeDTO> employees;
+    private HttpStatus status;
+    private String message;
+    private boolean error;
+}

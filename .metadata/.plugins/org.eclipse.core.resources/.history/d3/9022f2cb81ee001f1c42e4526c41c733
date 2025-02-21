@@ -1,0 +1,38 @@
+package com.example.AddressJoin.mapper;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+
+import com.example.AddressJoin.dao.entities.CountryMaster;
+import com.example.AddressJoin.dao.entities.DistrictMaster;
+import com.example.AddressJoin.dao.entities.StateMaster;
+import com.example.AddressJoin.dao.entities.SubDistrictMaster;
+import com.example.AddressJoin.dto.CountryMasterDTO;
+import com.example.AddressJoin.dto.DistrictMasterDTO;
+import com.example.AddressJoin.dto.StateMasterDTO;
+import com.example.AddressJoin.dto.SubDistrictMasterDTO;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface AddressMasterMapper {
+
+    AddressMasterMapper INSTANCE = Mappers.getMapper(AddressMasterMapper.class);
+
+    CountryMasterDTO toCountryMasterDTO(CountryMaster countryMaster);
+
+    @Mapping(source = "countryMaster.id", target = "countryId")
+    StateMasterDTO toStateMasterDTO(StateMaster stateMaster);
+
+    @Mapping(source = "stateMaster.id", target = "stateId")
+    DistrictMasterDTO toDistrictMasterDTO(DistrictMaster districtMaster);
+
+    @Mapping(source = "districtMaster.id", target = "districtId")
+    SubDistrictMasterDTO toSubDistrictMasterDTO(SubDistrictMaster subDistrictMaster);
+
+    List<CountryMasterDTO> toCountryMasterDTOList(List<CountryMaster> countryMasters);
+    List<StateMasterDTO> toStateMasterDTOList(List<StateMaster> stateMasters);
+    List<DistrictMasterDTO> toDistrictMasterDTOList(List<DistrictMaster> districtMasters);
+    List<SubDistrictMasterDTO> toSubDistrictMasterDTOList(List<SubDistrictMaster> subDistrictMasters);
+}

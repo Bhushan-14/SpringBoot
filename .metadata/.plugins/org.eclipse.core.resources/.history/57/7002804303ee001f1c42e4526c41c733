@@ -1,0 +1,46 @@
+package com.example.AddressJoin.controllers;
+
+import com.example.AddressJoin.dto.CountryMasterDTO;
+import com.example.AddressJoin.dto.DistrictMasterDTO;
+import com.example.AddressJoin.dto.StateMasterDTO;
+import com.example.AddressJoin.dto.SubDistrictMasterDTO;
+import com.example.AddressJoin.dto.response.AddressApiResponse;
+import com.example.AddressJoin.services.AddressService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequestMapping("/address")
+@RequiredArgsConstructor
+public class AddressMasterControllerImpl implements AddressMasterController {
+
+    private final AddressService addressService;
+
+    @Override
+    @GetMapping("/getCountryWithStatesDistrictsSubDistricts")
+    public ResponseEntity<AddressApiResponse<CountryMasterDTO>> getCountryWithStatesDistrictsSubDistricts(@RequestParam Long countryId) {
+        return ResponseEntity.ok(addressService.getCountryWithStatesDistrictsSubDistricts(countryId));
+    }
+
+    @Override
+    @GetMapping("/getStatesByCountry")
+    public ResponseEntity<AddressApiResponse<StateMasterDTO>> getStatesByCountry(@RequestParam Long countryId) {
+        return ResponseEntity.ok(addressService.getStatesByCountry(countryId));
+    }
+
+    @Override
+    @GetMapping("/getDistrictsByState")
+    public ResponseEntity<AddressApiResponse<DistrictMasterDTO>> getDistrictsByState(@RequestParam Long stateId) {
+        return ResponseEntity.ok(addressService.getDistrictsByState(stateId));
+    }
+
+    @Override
+    @GetMapping("/getSubDistrictsByDistrict")
+    public ResponseEntity<AddressApiResponse<SubDistrictMasterDTO>> getSubDistrictsByDistrict(@RequestParam Long districtId) {
+        return ResponseEntity.ok(addressService.getSubDistrictsByDistrict(districtId));
+    }
+}

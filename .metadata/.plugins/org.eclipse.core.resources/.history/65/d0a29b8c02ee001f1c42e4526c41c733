@@ -1,0 +1,5 @@
+package com.example.AddressJoin.controllers;
+
+public interface AdressMasterController {
+
+}

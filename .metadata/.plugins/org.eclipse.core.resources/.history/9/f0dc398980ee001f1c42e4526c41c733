@@ -1,0 +1,39 @@
+package com.example.demo.mapper;
+
+import com.example.demo.dao.entities.*;
+import com.example.demo.dto.response.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface AddressMasterMapper {
+
+    AddressMasterMapper INSTANCE = Mappers.getMapper(AddressMasterMapper.class);
+
+    // Convert CountryMaster entity to CountryMasterDTO
+    @Mapping(source = "id", target = "countryId")
+    CountryMasterDTO toCountryMasterDTO(CountryMaster countryMaster);
+
+    // Convert StateMaster entity to StateMasterDTO
+    @Mapping(source = "countryMaster.id", target = "countryId")
+    StateMasterDTO toStateMasterDTO(StateMaster stateMaster);
+
+    // Convert DistrictMaster entity to DistrictMasterDTO
+    @Mapping(source = "stateMaster.id", target = "stateId")
+    DistrictMasterDTO toDistrictMasterDTO(DistrictMaster districtMaster);
+
+    // Convert SubDistrictMaster entity to SubDistrictMasterDTO
+    @Mapping(source = "districtMaster.id", target = "districtId")
+    SubDistrictMasterDTO toSubDistrictMasterDTO(SubDistrictMaster subDistrictMaster);
+
+    // List mappings for batch conversions
+    List<CountryMasterDTO> toCountryMasterDTOList(List<CountryMaster> countryMasters);
+
+    List<StateMasterDTO> toStateMasterDTOList(List<StateMaster> stateMasters);
+
+    List<DistrictMasterDTO> toDistrictMasterDTOList(List<DistrictMaster> districtMasters);
+
+    List<SubDistrictMasterDTO> toSubDistrictMasterDTOList(List<SubDistrictMaster> subDistrictMasters);
+}

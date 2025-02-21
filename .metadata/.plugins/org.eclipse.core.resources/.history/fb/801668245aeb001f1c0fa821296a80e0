@@ -1,0 +1,14 @@
+package com.example.demo.services;
+
+import com.example.demo.dto.DepartmentDTO;
+import com.example.demo.dto.response.DepartmentApiResponse;
+import org.springframework.data.domain.Pageable;
+
+public interface DepartmentService {
+    DepartmentApiResponse getDepartmentById(Long id);
+    DepartmentApiResponse getAllDepartments(Pageable pageable);
+    DepartmentApiResponse createDepartment(DepartmentDTO dto);
+    DepartmentApiResponse updateDepartment(Long id, DepartmentDTO dto);
+    DepartmentApiResponse deleteDepartment(Long id);
+}
+

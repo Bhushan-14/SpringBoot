@@ -1,0 +1,53 @@
+package com.example.AddressJoin.mapper;
+
+import com.example.AddressJoin.dao.entities.CountryMaster;
+import com.example.AddressJoin.dao.entities.DistrictMaster;
+import com.example.AddressJoin.dao.entities.StateMaster;
+import com.example.AddressJoin.dao.entities.SubDistrictMaster;
+import com.example.AddressJoin.dto.CountryMasterDTO;
+import com.example.AddressJoin.dto.DistrictMasterDTO;
+import com.example.AddressJoin.dto.StateMasterDTO;
+import com.example.AddressJoin.dto.SubDistrictMasterDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface AddressMasterMapper {
+
+    AddressMasterMapper INSTANCE = Mappers.getMapper(AddressMasterMapper.class);
+
+    // Country Mapping
+    CountryMaster toCountryMasterEntity(CountryMasterDTO dto);
+
+    CountryMasterDTO toCountryMasterDTO(CountryMaster entity);
+
+    // State Mapping
+    @Mapping(source = "countryId", target = "CountryMaster.id")
+    StateMaster toStateMasterEntity(StateMasterDTO dto);
+
+    @Mapping(source = "country.id", target = "countryId")
+    StateMasterDTO toStateMasterDTO(StateMaster entity);
+
+    // District Mapping
+    @Mapping(source = "stateId", target = "state.id")
+    DistrictMaster toDistrictMasterEntity(DistrictMasterDTO dto);
+
+    @Mapping(source = "state.id", target = "stateId")
+    DistrictMasterDTO toDistrictMasterDTO(DistrictMaster entity);
+
+    // Sub-District Mapping
+    @Mapping(source = "districtId", target = "district.id")
+    SubDistrictMaster toSubDistrictMasterEntity(SubDistrictMasterDTO dto);
+
+    @Mapping(source = "district.id", target = "districtId")
+    SubDistrictMasterDTO toSubDistrictMasterDTO(SubDistrictMaster entity);
+
+    // List Mapping Methods
+    List<CountryMasterDTO> toCountryMasterDTOList(List<CountryMaster> entityList);
+    List<StateMasterDTO> toStateMasterDTOList(List<StateMaster> entityList);
+    List<DistrictMasterDTO> toDistrictMasterDTOList(List<DistrictMaster> entityList);
+    List<SubDistrictMasterDTO> toSubDistrictMasterDTOList(List<SubDistrictMaster> entityList);
+}

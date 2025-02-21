@@ -1,0 +1,92 @@
+package com.example.demo.services;
+
+import com.example.demo.dao.entities.Employee;
+import com.example.demo.dao.entities.Department;
+import com.example.demo.dao.repositries.EmployeeRepository;
+import com.example.demo.dao.repositries.DepartmentRepository;
+import com.example.demo.dto.EmployeeDTO;
+import com.example.demo.dto.response.EmployeeApiResponse;
+import com.example.demo.mapper.EmployeeMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class EmployeeServiceImpl implements EmployeeService {
+
+    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeMapper employeeMapper;
+
+    @Override
+    public EmployeeApiResponse getEmployeeById(Long id) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+        return employeeOptional.map(employee -> new EmployeeApiResponse(
+                employeeMapper.mapEmployeeEntityToEmployeeDto(employee), null, HttpStatus.OK, "Employee found", false))
+                .orElseGet(() -> new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "Employee not found", true));
+    }
+
+    @Override
+    public EmployeeApiResponse getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        if (employees.isEmpty()) {
+            return new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "No employees found", true);
+        }
+        List<EmployeeDTO> dtoList = employees.stream().map(employeeMapper::mapEmployeeEntityToEmployeeDto).toList();
+        return new EmployeeApiResponse(null, dtoList, HttpStatus.OK, "Employees fetched successfully", false);
+    }
+
+    @Override
+    @Transactional
+    public EmployeeApiResponse createEmployee(EmployeeDTO dto) {
+        Employee employee = employeeMapper.mapEmployeeDtoToEmployeeEntity(dto);
+        employee.setActive(true);
+
+        Set<Department> departments = departmentRepository.findAllById(dto.getDepartmentIds()).stream().collect(Collectors.toSet());
+        employee.setDepartments(departments);
+
+        Employee savedEmployee = employeeRepository.save(employee);
+        return new EmployeeApiResponse(employeeMapper.mapEmployeeEntityToEmployeeDto(savedEmployee),
+                null, HttpStatus.CREATED, "Employee created successfully", false);
+    }
+
+    @Override
+    @Transactional
+    public EmployeeApiResponse updateEmployee(Long id, EmployeeDTO dto) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+        if (employeeOptional.isPresent()) {
+            Employee employeeToUpdate = employeeOptional.get();
+            employeeToUpdate.setName(dto.getName());
+            employeeToUpdate.setAge(dto.getAge());
+
+            Set<Department> departments = departmentRepository.findAllById(dto.getDepartmentIds()).stream().collect(Collectors.toSet());
+            employeeToUpdate.setDepartments(departments);
+
+            employeeRepository.save(employeeToUpdate);
+            return new EmployeeApiResponse(employeeMapper.mapEmployeeEntityToEmployeeDto(employeeToUpdate), null, HttpStatus.OK, "Employee updated successfully", false);
+        }
+        return new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "Employee not found", true);
+    }
+
+    @Override
+    @Transactional
+    public EmployeeApiResponse deleteEmployee(Long id) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+        if (employeeOptional.isPresent()) {
+            Employee employee = employeeOptional.get();
+            employee.setActive(false);
+            employeeRepository.save(employee);
+            return new EmployeeApiResponse(employeeMapper.mapEmployeeEntityToEmployeeDto(employee), null, HttpStatus.OK, "Employee deleted successfully", false);
+        }
+        return new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "Employee not found", true);
+    }
+}

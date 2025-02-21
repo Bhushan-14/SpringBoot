@@ -1,0 +1,122 @@
+package com.example.demo.services;
+
+import com.example.demo.dao.entities.Department;
+import com.example.demo.dao.repositries.DepartmentRepository;
+import com.example.demo.dto.DepartmentDTO;
+import com.example.demo.dto.response.DepartmentApiResponse;
+import com.example.demo.mapper.DepartmentMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class DepartmentServiceImpl implements DepartmentService {
+
+    private final DepartmentRepository departmentRepository;
+    private final DepartmentMapper departmentMapper;
+
+    @Override
+    public DepartmentApiResponse getDepartmentById(Long id) {
+        log.info("Fetching Department with ID: {}", id);
+        Optional<Department> departmentOptional = departmentRepository.findById(id);
+
+        if (departmentOptional.isPresent()) {
+            log.info("Department found with ID: {}", id);
+            DepartmentDTO departmentDTO = departmentMapper.mapEntityToDto(departmentOptional.get());
+            return new DepartmentApiResponse(departmentDTO, null, HttpStatus.OK, "Department found", false);
+        } else {
+            log.warn("Department not found with ID: {}", id);
+            return new DepartmentApiResponse(null, null, HttpStatus.NOT_FOUND, "Department not found", true);
+        }
+    }
+
+    /**
+     * Fetch all departments
+     */
+    @Override
+    public DepartmentApiResponse getAllDepartments() {
+        log.info("Fetching all departments");
+        List<Department> departmentList = departmentRepository.findAll();
+
+        if (departmentList.isEmpty()) {
+            log.warn("No departments found");
+            return new DepartmentApiResponse(null, null, HttpStatus.NOT_FOUND, "No departments found", true);
+        }
+
+        List<DepartmentDTO> dtoList = departmentList.stream()
+                                                    .map(departmentMapper::mapEntityToDto)
+                                                    .toList();
+        log.info("{} Departments found", dtoList.size());
+
+        return new DepartmentApiResponse(null, dtoList, HttpStatus.OK, "Departments fetched successfully", false);
+    }
+
+    /**
+     * Create a new department
+     */
+    @Override
+    @Transactional
+    public DepartmentApiResponse createDepartment(DepartmentDTO dto) {
+        log.info("Creating new Department with name: {}", dto.getName());
+        Department department = departmentMapper.mapDtoToEntity(dto);
+        department.setIsActive(true);  // ✅ Corrected setter method
+        Department savedDepartment = departmentRepository.save(department);
+        log.info("Department created successfully with ID: {}", savedDepartment.getId());
+        DepartmentDTO savedDepartmentDto = departmentMapper.mapEntityToDto(savedDepartment);
+
+        return new DepartmentApiResponse(savedDepartmentDto, null, HttpStatus.CREATED, "Department created successfully", false);
+    }
+
+    /**
+     * Update an existing department
+     */
+    @Override
+    @Transactional
+    public DepartmentApiResponse updateDepartment(Long id, DepartmentDTO dto) {
+        log.info("Updating Department with ID: {}", id);
+        Optional<Department> departmentOptional = departmentRepository.findById(id);
+
+        if (departmentOptional.isPresent()) {
+            Department departmentToUpdate = departmentOptional.get();
+            departmentToUpdate.setName(dto.getName());
+            departmentRepository.save(departmentToUpdate);
+            log.info("Department updated successfully with ID: {}", id);
+            DepartmentDTO updatedDepartmentDto = departmentMapper.mapEntityToDto(departmentToUpdate);
+
+            return new DepartmentApiResponse(updatedDepartmentDto, null, HttpStatus.OK, "Department updated successfully", false);
+        } else {
+            log.warn("Department not found with ID: {}", id);
+            return new DepartmentApiResponse(null, null, HttpStatus.NOT_FOUND, "Department not found", true);
+        }
+    }
+
+    /**
+     * Soft delete a department
+     */
+    @Override
+    @Transactional
+    public DepartmentApiResponse deleteDepartment(Long id) {
+        log.info("Soft-deleting Department with ID: {}", id);
+        Optional<Department> departmentOptional = departmentRepository.findById(id);
+
+        if (departmentOptional.isPresent()) {
+            Department department = departmentOptional.get();
+            department.setActive(false);  
+            departmentRepository.save(department);
+            log.info("Department soft-deleted with ID: {}", id);
+            DepartmentDTO deletedDepartmentDto = departmentMapper.mapEntityToDto(department);
+
+            return new DepartmentApiResponse(deletedDepartmentDto, null, HttpStatus.OK, "Department deleted successfully", false);
+        } else {
+            log.warn("Department not found with ID: {}", id);
+            return new DepartmentApiResponse(null, null, HttpStatus.NOT_FOUND, "Department not found", true);
+        }
+    }
+}

@@ -1,0 +1,50 @@
+package com.example.AddressJoin.controllers;
+
+import com.example.AddressJoin.dto.CountryMasterDTO;
+import com.example.AddressJoin.dto.DistrictMasterDTO;
+import com.example.AddressJoin.dto.StateMasterDTO;
+import com.example.AddressJoin.dto.SubDistrictMasterDTO;
+import com.example.AddressJoin.dto.response.AddressApiResponse;
+import com.example.AddressJoin.services.AddressService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/address")
+public class AddressMasterControllerImpl implements AddressMasterController {
+
+    private final AddressService addressService;
+
+    @Override
+    @GetMapping("/getCountryWithStatesDistrictsSubDistricts")
+    public AddressApiResponse<CountryMasterDTO> getCountryWithStatesDistrictsSubDistricts(@RequestParam Long countryId) {
+        log.info("Fetching country with ID: {}", countryId);
+        return addressService.getCountryWithStatesDistrictsSubDistricts(countryId);
+    }
+
+    @Override
+    @GetMapping("/getStatesByCountry")
+    public AddressApiResponse<StateMasterDTO> getStatesByCountry(@RequestParam Long countryId) {
+        log.info("Fetching states for country with ID: {}", countryId);
+        return addressService.getStatesByCountry(countryId);
+    }
+
+    @Override
+    @GetMapping("/getDistrictsByState")
+    public AddressApiResponse<DistrictMasterDTO> getDistrictsByState(@RequestParam Long stateId) {
+        log.info("Fetching districts for state with ID: {}", stateId);
+        return addressService.getDistrictsByState(stateId);
+    }
+
+    @Override
+    @GetMapping("/getSubDistrictsByDistrict")
+    public AddressApiResponse<SubDistrictMasterDTO> getSubDistrictsByDistrict(@RequestParam Long districtId) {
+        log.info("Fetching sub-districts for district with ID: {}", districtId);
+        return addressService.getSubDistrictsByDistrict(districtId);
+    }
+}

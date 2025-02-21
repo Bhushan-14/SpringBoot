@@ -1,0 +1,41 @@
+package com.example.demo.controllers;
+
+import com.example.demo.dto.DepartmentDTO;
+import com.example.demo.dto.response.DepartmentApiResponse;
+import com.example.demo.services.DepartmentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+public class DepartmentControllerImpl implements DepartmentController {
+
+    private final DepartmentService departmentService;
+
+    @Override
+    public ResponseEntity<DepartmentApiResponse> getDepartmentById(Long id) {
+        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+    }
+
+    @Override
+    public ResponseEntity<DepartmentApiResponse> getAllDepartments(Pageable pageable) {
+        return ResponseEntity.ok(departmentService.getAllDepartments(pageable));
+    }
+
+    @Override
+    public ResponseEntity<DepartmentApiResponse> createDepartment(DepartmentDTO departmentDTO) {
+        return ResponseEntity.ok(departmentService.createDepartment(departmentDTO));
+    }
+
+    @Override
+    public ResponseEntity<DepartmentApiResponse> updateDepartment(Long id, DepartmentDTO departmentDTO) {
+        return ResponseEntity.ok(departmentService.updateDepartment(id, departmentDTO));
+    }
+
+    @Override
+    public ResponseEntity<DepartmentApiResponse> deleteDepartment(Long id) {
+        return ResponseEntity.ok(departmentService.deleteDepartment(id));
+    }
+}

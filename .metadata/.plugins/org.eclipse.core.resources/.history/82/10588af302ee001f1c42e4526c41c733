@@ -1,0 +1,19 @@
+package com.example.AddressJoin.controllers;
+
+import com.example.AddressJoin.dto.CountryMasterDTO;
+import com.example.AddressJoin.dto.DistrictMasterDTO;
+import com.example.AddressJoin.dto.StateMasterDTO;
+import com.example.AddressJoin.dto.SubDistrictMasterDTO;
+import com.example.AddressJoin.dto.response.AddressApiResponse;
+import org.springframework.http.ResponseEntity;
+
+public interface AddressMasterController {
+
+    ResponseEntity<AddressApiResponse<CountryMasterDTO>> getCountryWithStatesDistrictsSubDistricts(Long countryId);
+
+    ResponseEntity<AddressApiResponse<StateMasterDTO>> getStatesByCountry(Long countryId);
+
+    ResponseEntity<AddressApiResponse<DistrictMasterDTO>> getDistrictsByState(Long stateId);
+
+    ResponseEntity<AddressApiResponse<SubDistrictMasterDTO>> getSubDistrictsByDistrict(Long districtId);
+}

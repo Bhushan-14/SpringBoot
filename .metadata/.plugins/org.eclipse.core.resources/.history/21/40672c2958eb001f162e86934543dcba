@@ -1,0 +1,22 @@
+package com.example.demo.dto.response;
+
+import com.example.demo.dto.DepartmentDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class DepartmentApiResponse {
+    private DepartmentDTO department;
+    private List<DepartmentDTO> departments;
+    private Page<DepartmentDTO> departmentPage;
+    private HttpStatus status;
+    private String message;
+    private boolean error;
+}

@@ -1,0 +1,15 @@
+package com.example.demo.service;
+
+import com.example.demo.dto.EmployeeDTO;
+import com.example.demo.dto.response.EmployeeApiResponse;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface EmployeeService {
+    EmployeeApiResponse getAllEmployees();
+    EmployeeApiResponse getEmployeeById(Long id);
+    EmployeeApiResponse createEmployee(EmployeeDTO dto);
+    EmployeeApiResponse updateEmployee(Long id, EmployeeDTO dto);
+    EmployeeApiResponse deleteEmployee(Long id);
+}

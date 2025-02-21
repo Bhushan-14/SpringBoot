@@ -1,0 +1,5 @@
+package com.example.AddressJoin.dao.repositries;
+
+public class CountryMasterRepository {
+
+}

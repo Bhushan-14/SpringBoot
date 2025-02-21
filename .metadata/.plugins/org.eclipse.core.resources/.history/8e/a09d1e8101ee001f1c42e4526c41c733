@@ -1,0 +1,99 @@
+package com.example.AddressJoin.services;
+
+import com.example.AddressJoin.dao.entities.CountryMaster;
+import com.example.AddressJoin.dao.entities.DistrictMaster;
+import com.example.AddressJoin.dao.entities.StateMaster;
+import com.example.AddressJoin.dao.entities.SubDistrictMaster;
+import com.example.AddressJoin.dao.repositries.CountryMasterRepository;
+import com.example.AddressJoin.dao.repositries.DistrictMasterRepository;
+import com.example.AddressJoin.dao.repositries.StateMasterRepository;
+import com.example.AddressJoin.dao.repositries.SubDistrictMasterRepository;
+import com.example.AddressJoin.dto.CountryDTO;
+import com.example.AddressJoin.dto.DistrictDTO;
+import com.example.AddressJoin.dto.StateDTO;
+import com.example.AddressJoin.dto.SubDistrictDTO;
+import com.example.AddressJoin.dto.response.AddressApiResponse;
+import com.example.AddressJoin.mapper.AddressMasterMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AddressServiceImpl implements AddressService {
+
+    private final CountryMasterRepository countryMasterRepository;
+    private final StateMasterRepository stateMasterRepository;
+    private final DistrictMasterRepository districtMasterRepository;
+    private final SubDistrictMasterRepository subDistrictMasterRepository;
+    private final AddressMasterMapper addressMasterMapper;
+
+    @Override
+    public AddressApiResponse getCountryWithStatesDistrictsSubDistricts(Long countryId) {
+        log.info("Fetching country with ID: {}", countryId);
+        Optional<CountryMaster> countryOptional = countryMasterRepository.findById(countryId);
+        
+        if (countryOptional.isPresent()) {
+            CountryMaster country = countryOptional.get();
+            CountryDTO countryDTO = addressMasterMapper.mapEntityToDto(country);
+            
+            // Mapping nested entities (States, Districts, SubDistricts)
+            countryDTO.setStates(country.getStates().stream()
+                    .map(addressMasterMapper::mapEntityToDto)
+                    .collect(Collectors.toList()));
+
+            return new AddressApiResponse(countryDTO, null, HttpStatus.OK, "Country and related data fetched successfully", false);
+        }
+        return new AddressApiResponse(null, null, HttpStatus.NOT_FOUND, "Country not found", true);
+    }
+
+    @Override
+    public AddressApiResponse getStatesByCountry(Long countryId) {
+        log.info("Fetching states for country with ID: {}", countryId);
+        List<StateMaster> stateList = stateMasterRepository.findStatesByCountryId(countryId);
+        
+        if (!stateList.isEmpty()) {
+            List<StateDTO> stateDTOList = stateList.stream()
+                    .map(addressMasterMapper::mapEntityToDto)
+                    .collect(Collectors.toList());
+            log.info("Fetched States: {}", stateDTOList);
+            return new AddressApiResponse(null, stateDTOList, HttpStatus.OK, "States fetched successfully", false);
+        }
+        return new AddressApiResponse(null, null, HttpStatus.NOT_FOUND, "No states found for the given country", true);
+    }
+
+    @Override
+    public AddressApiResponse getDistrictsByState(Long stateId) {
+        log.info("Fetching districts for state with ID: {}", stateId);
+        List<DistrictMaster> districtList = districtMasterRepository.findDistrictsByStateId(stateId);
+        
+        if (!districtList.isEmpty()) {
+            List<DistrictDTO> districtDTOList = districtList.stream()
+                    .map(addressMasterMapper::mapEntityToDto)
+                    .collect(Collectors.toList());
+            log.info("Fetched Districts: {}", districtDTOList);
+            return new AddressApiResponse(null, districtDTOList, HttpStatus.OK, "Districts fetched successfully", false);
+        }
+        return new AddressApiResponse(null, null, HttpStatus.NOT_FOUND, "No districts found for the given state", true);
+    }
+
+    @Override
+    public AddressApiResponse getSubDistrictsByDistrict(Long districtId) {
+        log.info("Fetching sub-districts for district with ID: {}", districtId);
+        List<SubDistrictMaster> subDistrictList = subDistrictMasterRepository.findSubDistrictsByDistrictId(districtId);
+        
+        if (!subDistrictList.isEmpty()) {
+            List<SubDistrictDTO> subDistrictDTOList = subDistrictList.stream()
+                    .map(addressMasterMapper::mapEntityToDto)
+                    .collect(Collectors.toList());
+            log.info("Fetched Sub-Districts: {}", subDistrictDTOList);
+            return new AddressApiResponse(null, subDistrictDTOList, HttpStatus.OK, "Sub-Districts fetched successfully", false);
+        }
+        return new AddressApiResponse(null, null, HttpStatus.NOT_FOUND, "No sub-districts found for the given district",

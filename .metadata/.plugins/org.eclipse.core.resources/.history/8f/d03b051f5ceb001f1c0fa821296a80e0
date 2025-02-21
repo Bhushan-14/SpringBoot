@@ -1,0 +1,34 @@
+package com.example.demo.controllers;
+
+import com.example.demo.dto.EmployeeDTO;
+import com.example.demo.dto.response.EmployeeApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RequestMapping("/employees")
+public interface EmployeeController {
+
+    @GetMapping("/{id}")
+    ResponseEntity<EmployeeApiResponse> getEmployeeById(@PathVariable Long id);
+
+    @GetMapping("/all")
+    ResponseEntity<EmployeeApiResponse> getAllEmployees();
+
+    @PostMapping("/addEmployee")
+    ResponseEntity<EmployeeApiResponse> createEmployee(@RequestBody EmployeeDTO employeeDTO);
+
+    @PutMapping("/updateEmployee/{id}")
+    ResponseEntity<EmployeeApiResponse> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO);
+
+    @DeleteMapping("/deleteEmployee/{id}")
+    ResponseEntity<EmployeeApiResponse> deleteEmployee(@PathVariable Long id);
+
+    @GetMapping("/active")
+    ResponseEntity<EmployeeApiResponse> getAllActiveEmployees();
+
+    @GetMapping("/department/{departmentId}")
+    ResponseEntity<EmployeeApiResponse> getEmployeesByDepartment(@PathVariable Long departmentId);
+
+    @PutMapping("/restore/{id}")
+    ResponseEntity<EmployeeApiResponse> restoreEmployee(@PathVariable Long id);
+}

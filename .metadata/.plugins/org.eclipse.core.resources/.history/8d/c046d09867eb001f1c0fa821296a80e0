@@ -1,0 +1,37 @@
+package com.example.demo.mapper;
+
+import com.example.demo.dao.entities.Department;
+import com.example.demo.dao.entities.Employee;
+import com.example.demo.dto.EmployeeDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    @Mapping(target = "departmentIds", expression = "java(mapDepartmentIds(employee.getDepartments()))")
+    EmployeeDTO mapEmployeeEntityToEmployeeDto(Employee employee);
+
+    @Mapping(target = "departments", ignore = true) // Will be set in service
+    Employee mapEmployeeDtoToEmployeeEntity(EmployeeDTO employeeDTO);
+
+    default Set<Long> mapDepartmentIds(Set<Department> departments) {
+        return departments.stream().map(Department::getId).collect(Collectors.toSet());
+    }
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    @Mapping(target = "departmentIds", source = "departments", qualifiedByName = "mapDepartmentIds")
+    EmployeeDTO mapEmployeeEntityToEmployeeDto(Employee employee);
+
+    @Mapping(target = "departments", ignore = true) // Will be set in service
+    Employee mapEmployeeDtoToEmployeeEntity(EmployeeDTO employeeDTO);
+
+    @Named("mapDepartmentIds")
+    default Set<Long> mapDepartmentIds(Set<Department> departments) {
+        return departments.stream().map(Department::getId).collect(Collectors.toSet());
+    }
+}

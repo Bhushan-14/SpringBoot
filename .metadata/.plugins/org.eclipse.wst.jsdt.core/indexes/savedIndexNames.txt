@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\hplap\OneDrive\Desktop\Mine\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1174345505.index
+1412985764.index
+1876861350.index
+142774887.index
+4237304745.index
+2640707162.index

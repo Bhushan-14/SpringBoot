@@ -1,0 +1,54 @@
+package com.example.demo.controllers;
+
+import com.example.demo.dto.EmployeeDTO;
+import com.example.demo.dto.response.EmployeeApiResponse;
+import com.example.demo.services.EmployeeService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+@RestController  
+@RequestMapping("/employees")
+@Slf4j
+@RequiredArgsConstructor
+public class EmployeeControllerImpl implements EmployeeController {
+
+    private final EmployeeService employeeService;
+
+    @Override
+    public ResponseEntity<EmployeeApiResponse> getEmployeeById(@PathVariable Long id) {
+        log.info("Fetching Employee by ID: {}", id);
+        EmployeeApiResponse response = employeeService.getEmployeeById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public ResponseEntity<EmployeeApiResponse> getAllEmployees() {
+        log.info("Fetching all Employees");
+        EmployeeApiResponse response = employeeService.getAllEmployees();
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public ResponseEntity<EmployeeApiResponse> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+        log.info("Creating new Employee: {}", employeeDTO);
+        EmployeeApiResponse response = employeeService.createEmployee(employeeDTO);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public ResponseEntity<EmployeeApiResponse> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
+        log.info("Updating Employee with ID: {} - Data: {}", id, employeeDTO);
+        EmployeeApiResponse response = employeeService.updateEmployee(id, employeeDTO);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public ResponseEntity<EmployeeApiResponse> deleteEmployee(@PathVariable Long id) {
+        log.info("Soft Deleting Employee with ID: {}", id);
+        EmployeeApiResponse response = employeeService.deleteEmployee(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+}

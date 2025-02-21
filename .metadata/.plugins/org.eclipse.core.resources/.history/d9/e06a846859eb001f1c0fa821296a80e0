@@ -1,0 +1,16 @@
+package com.example.demo.mapper;
+
+import com.example.demo.dao.entities.Department;
+import com.example.demo.dto.DepartmentDTO;
+import org.mapstruct.Mapper;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface DepartmentMapper {
+    Department mapDtoToEntity(DepartmentDTO departmentDTO);
+    DepartmentDTO mapEntityToDto(Department department);
+
+    // ✅ Add this missing method
+    List<DepartmentDTO> mapEntityListToDtoList(List<Department> departments);
+}

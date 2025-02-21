@@ -1,0 +1,12 @@
+package com.example.demo.services;
+
+import com.example.demo.dto.DepartmentDTO;
+import com.example.demo.dto.response.DepartmentApiResponse;
+
+public interface DepartmentService {
+    DepartmentApiResponse getDepartmentById(Long id);
+    DepartmentApiResponse getAllDepartments(); 
+    DepartmentApiResponse createDepartment(DepartmentDTO dto);
+    DepartmentApiResponse updateDepartment(Long id, DepartmentDTO dto);
+    DepartmentApiResponse deleteDepartment(Long id);
+}

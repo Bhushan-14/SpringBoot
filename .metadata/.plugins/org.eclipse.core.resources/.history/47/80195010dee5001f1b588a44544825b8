@@ -1,0 +1,77 @@
+package com.example.demo.service;
+
+import com.example.demo.dao.entities.Employee;
+import com.example.demo.dao.repositories.EmployeeRepository;
+import com.example.demo.dto.EmployeeDTO;
+import com.example.demo.dto.response.EmployeeApiResponse;
+import com.example.demo.mapper.EmployeeMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Slf4j
+public class EmployeeServiceImpl implements EmployeeService {
+
+    @Autowired
+    private EmployeeRepository repository;
+
+    @Autowired
+    private EmployeeMapper mapper;
+
+    @Override
+    public EmployeeApiResponse getEmployeeById(Long id) {
+        try {
+            log.info("Fetching active Employee with ID: {}", id);
+            Optional<Employee> employeeOptional = repository.findActiveEmployeeById(id);
+            if (employeeOptional.isPresent()) {
+                log.info("Active Employee found with ID: {}", id);
+                return new EmployeeApiResponse(mapper.mapEmployeeEntityToEmployeeDto(employeeOptional.get()), null, HttpStatus.OK, "Employee found", false);
+            } else {
+                log.warn("No active Employee found with ID: {}", id);
+                return new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "Employee not found", true);
+            }
+        } catch (Exception e) {
+            log.error("Error fetching employee with ID: {}", id, e);
+            return new EmployeeApiResponse(null, null, HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching employee", true);
+        }
+    }
+
+    @Override
+    public EmployeeApiResponse getAllEmployees() {
+        try {
+            log.info("Fetching all active employees");
+            List<Employee> employees = repository.findAllActiveEmployees();
+            if (employees.isEmpty()) {
+                log.warn("No active employees found");
+                return new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "No employees found", true);
+            }
+            List<EmployeeDTO> employeeDTOs = employees.stream().map(mapper::mapEmployeeEntityToEmployeeDto).collect(Collectors.toList());
+            return new EmployeeApiResponse(null, employeeDTOs, HttpStatus.OK, "Active employees retrieved", false);
+        } catch (Exception e) {
+            log.error("Error fetching employees", e);
+            return new EmployeeApiResponse(null, null, HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching employees", true);
+        }
+    }
+
+    @Override
+    public EmployeeApiResponse deleteEmployee(Long id) {
+        log.info("Soft deleting Employee with ID: {}", id);
+        Optional<Employee> employeeOptional = repository.findActiveEmployeeById(id);
+        if (employeeOptional.isPresent()) {
+            Employee employee = employeeOptional.get();
+            employee.setIsActive(false);
+            repository.save(employee);
+            log.info("Employee soft deleted with ID: {}", id);
+            return new EmployeeApiResponse(null, null, HttpStatus.OK, "Employee deactivated successfully", false);
+        } else {
+            log.warn("Employee not found or already deactivated with ID: {}", id);
+            return new EmployeeApiResponse(null, null, HttpStatus.NOT_FOUND, "Employee not found or already inactive", true);
+        }
+    }
+}

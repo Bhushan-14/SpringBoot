@@ -1,0 +1,86 @@
+package com.example.demo.dao.entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.List;
+
+@Entity
+@Table(name = "departments")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Department {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private boolean isActive = true;
+    private boolean isDeleted = false;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Employee> employees;
+}
+
+@Entity
+@Table(name = "employees")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private int age;
+    private boolean isActive = true;
+    private boolean isDeleted = false;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
+}
+
+package com.example.demo.dto;
+
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class DepartmentDTO {
+    private Long id;
+    private String name;
+    private boolean isActive;
+    private boolean isDeleted;
+}
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmployeeDTO {
+    private Long id;
+    private String name;
+    private int age;
+    private Long departmentId;
+    private boolean isActive;
+    private boolean isDeleted;
+}
+
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import java.util.Optional;
+
+@Configuration
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+public class AuditAwareConfig {
+    public AuditorAware<String> auditorProvider() {
+        return () -> Optional.ofNullable("system"); // Replace with actual user fetching logic
+    }
+}

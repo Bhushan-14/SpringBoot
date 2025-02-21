@@ -1,0 +1,55 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+  <!-- Define AddBookServlet -->
+  <servlet>
+    <servlet-name>AddBookServlet</servlet-name>
+    <display-name>AddBookServlet</display-name>
+    <description></description>
+    <servlet-class>com.servlet.AddBookServlet</servlet-class>
+  </servlet>
+
+  <!-- Define ListBooksServlet -->
+  <servlet>
+    <servlet-name>ListBooksServlet</servlet-name>
+    <display-name>ListBooksServlet</display-name>
+    <description></description>
+    <servlet-class>com.servlet.ListBooksServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>UpdateBookServlet</servlet-name>
+  	<display-name>UpdateBookServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.servlet.UpdateBookServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>DeleteBookServlet</servlet-name>
+  	<display-name>DeleteBookServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.servlet.DeleteBookServlet</servlet-class>
+  </servlet>
+
+  <!-- Map AddBookServlet to URL pattern -->
+  <servlet-mapping>
+    <servlet-name>AddBookServlet</servlet-name>
+    <url-pattern>/AddBookServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- Map ListBooksServlet to URL pattern -->
+  <servlet-mapping>
+    <servlet-name>ListBooksServlet</servlet-name>
+    <url-pattern>/ListBooksServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>UpdateBookServlet</servlet-name>
+  	<url-pattern>/UpdateBookServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>DeleteBookServlet</servlet-name>
+  	<url-pattern>/DeleteBookServlet</url-pattern>
+  </servlet-mapping>
+</web-app>

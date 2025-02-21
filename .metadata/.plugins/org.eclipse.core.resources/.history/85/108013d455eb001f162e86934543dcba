@@ -1,0 +1,13 @@
+package com.example.demo.dto;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmployeeDTO {
+    private Long id;
+    private String name;
+    private int age;
+    private Long departmentId;
+    private boolean isActive;
+    private boolean isDeleted;
+}

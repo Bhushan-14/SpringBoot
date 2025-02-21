@@ -1,0 +1,16 @@
+package com.example.demo.mapper;
+
+import com.example.demo.dao.entities.Employee;
+import com.example.demo.dto.EmployeeDTO;
+import org.mapstruct.Mapper;
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+    
+    Employee mapDtoToEntity(EmployeeDTO employeeDTO);
+
+    EmployeeDTO mapEntityToDto(Employee employee);
+
+    List<EmployeeDTO> mapEntityListToDtoList(List<Employee> employeeList);
+}

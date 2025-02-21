@@ -1,0 +1,5 @@
+INDEX VERSION 1.134
+C:\Users\hplap\OneDrive\Desktop\Mine\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\833971360.index
+\demo\src\main\resources
+C:\Users\hplap\OneDrive\Desktop\Mine\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1484962482.index
+\Library_Management_System\src\main\java

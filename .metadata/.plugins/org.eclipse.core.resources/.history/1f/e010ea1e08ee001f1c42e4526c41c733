@@ -1,0 +1,19 @@
+package com.example.AddressJoin.services;
+
+import com.example.AddressJoin.dto.CountryMasterDTO;
+import com.example.AddressJoin.dto.DistrictMasterDTO;
+import com.example.AddressJoin.dto.StateMasterDTO;
+import com.example.AddressJoin.dto.SubDistrictMasterDTO;
+import com.example.AddressJoin.dto.response.AddressApiResponse;
+
+public interface AddressService {
+    AddressApiResponse getCountryWithStatesDistrictsSubDistricts(Long countryId);
+    AddressApiResponse getStatesByCountry(Long countryId);
+    AddressApiResponse getDistrictsByState(Long stateId);
+    AddressApiResponse getSubDistrictsByDistrict(Long districtId);
+    AddressApiResponse<CountryMasterDTO> addCountry(CountryMasterDTO countryDTO);
+    AddressApiResponse<StateMasterDTO> addState(StateMasterDTO stateDTO);
+    AddressApiResponse<DistrictMasterDTO> addDistrict(DistrictMasterDTO districtDTO);
+    AddressApiResponse<SubDistrictMasterDTO> addSubDistrict(SubDistrictMasterDTO subDistrictDTO);
+}
+
